@@ -18,6 +18,11 @@ import edu.ycp.cs320.movethesquare.model.Square;
 
 public class GameView extends JPanel {
 	private static final Color MIDNIGHT_BLUE = new Color(25, 25, 112);
+	// luc: making a new color
+	private static final Color I_DONT_KNOW_WHAT_THIS_WILL_BE = new Color(50, 100, 75);
+	// width and height for the frame
+	private static final double WIDTH = 640.0;
+	private static final double HEIGHT = 480.0;
 	
 	private Game model;
 	private GameController controller;
@@ -26,7 +31,7 @@ public class GameView extends JPanel {
 	public GameView(Game model) {
 		this.model = model;
 		setPreferredSize(new Dimension((int) model.getWidth(), (int)model.getHeight()));
-		setBackground(MIDNIGHT_BLUE);
+		setBackground(I_DONT_KNOW_WHAT_THIS_WILL_BE);
 
 		// djh2-KEC119-21: changed from 30 to 45
 		// djh2-YCPlaptop: change from 45 to 100
@@ -66,11 +71,33 @@ public class GameView extends JPanel {
 		
 		// djh2-KEC110-21: changed from GREEN to RED
 		// djh2-YCPlaptop: change from RED to YELLOW
-		g.setColor(Color.YELLOW);
+		//luc: wanted to go to orange cuz im wacky like that
+		g.setColor(Color.ORANGE);
 
 		Square square = model.getSquare();
 		
-		g.fillRect((int) square.getX(), (int) square.getY(), (int) square.getWidth(), (int) square.getHeight());
+		//g.fillRect((int) square.getX(), (int) square.getY(), (int) square.getWidth(), (int) square.getHeight());
+		// luc: in bounds calculation, just wont draw if out
+		if (square.getX() + square.getWidth() >= WIDTH) {
+			// luc: draws the circle but stops drawing if it is supposed to go out of bounds
+			g.fillOval((int) (WIDTH - square.getWidth()), (int) square.getY() , (int) square.getWidth(), (int) square.getHeight());
+			
+		} else if (square.getX() - square.getWidth() <= 0) { 
+			// luc: drawing it on the left side
+			g.fillOval(0, (int) square.getY() , (int) square.getWidth(), (int) square.getHeight());
+
+		} else if (square.getY() + square.getHeight() >= HEIGHT) {
+			// luc: same thing here, but with the height
+			g.fillOval((int) square.getX(), (int) (HEIGHT - square.getY()), (int) square.getWidth(), (int) square.getHeight());
+			
+		} else if (square.getY() - square.getHeight() <= 0) {
+			// luc: for the zero calc
+			g.fillOval((int) square.getX(), 0, (int) square.getWidth(), (int) square.getHeight());
+
+		} else {
+			// luc: drawing a circle instead
+			g.fillOval((int) square.getX(), (int) square.getY(), (int) square.getWidth(), (int) square.getHeight());	
+		}
 	}
 	
 	public static void main(String[] args) {
@@ -78,8 +105,8 @@ public class GameView extends JPanel {
 			@Override
 			public void run() {
 				Game model = new Game();
-				model.setWidth(640.0);
-				model.setHeight(480.0);
+				model.setWidth(WIDTH);
+				model.setHeight(HEIGHT);
 				
 				Square square = new Square();
 				square.setX(300.0);
